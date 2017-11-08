@@ -1,5 +1,9 @@
 mod lua;
 
+use lua::lexer::tokenizer::Tokenizer;
+
 fn main() {
-    println!("Hello, world!");
+    let code = "haha yes";
+
+    Tokenizer::new(code.chars().collect());
 }
