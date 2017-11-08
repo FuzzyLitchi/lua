@@ -1,16 +1,16 @@
-use super::token::TokenPosition;
+use super::token::{Token, TokenType, TokenPosition};
 
 #[derive(Clone)]
 pub struct Snapshot {
-    pub pos: TokenPosition,
     pub index: usize,
+    pub pos: TokenPosition,
 }
 
 impl Snapshot {
-    fn new(pos: TokenPosition, index: usize) -> Snapshot {
+    fn new(index: usize, pos: TokenPosition) -> Snapshot {
         Snapshot {
-            pos,
             index,
+            pos,
         }
     }
 }
@@ -34,6 +34,10 @@ impl Tokenizer {
 
     pub fn index(&self) -> usize {
         self.index
+    }
+
+    pub fn end(&self) -> bool {
+        self.index >= self.items.len()
     }
 
     pub fn advance(&mut self) -> bool {
@@ -68,5 +72,54 @@ impl Tokenizer {
         self.peek_n(0)
     }
 
+    pub fn take_snapshot(&mut self) {
+        self.snapshots.push(Snapshot::new(self.index, self.pos));
+    }
 
+    pub fn peek_snapshot(&self) -> Option<&Snapshot> {
+        self.snapshots.last()
+    }
+
+    pub fn rollback_snapshot(&mut self) {
+        let snapshot = self.snapshots.pop().unwrap();
+        self.index = snapshot.index;
+        self.pos = snapshot.pos;
+    }
+
+    pub fn commit_snapshot(&mut self) {
+        self.snapshots.pop();
+    }
+
+    pub fn last_position(&self) -> TokenPosition {
+        self.peek_snapshot().unwrap().pos
+    }
+
+    /*pub fn try_match_token(&mut self, matcher: &Matcher) -> Option<Token> {
+        if self.end() {
+            return Some(Token::new(TokenType::EOF,
+                                   TokenPosition::new(self.index, self.index),
+                                   String::new()));
+        }
+
+        self.take_snapshot();
+        match matcher.try_match(self) {
+            Some(t) => {
+                self.commit_snapshot();
+                Some(t)
+            }
+
+            None => {
+                self.rollback_snapshot();
+                None
+            }
+        }
+    }*/
+}
+
+impl Iterator for Tokenizer {
+    type Item = char;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.read().cloned()
+    }
 }

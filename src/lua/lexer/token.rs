@@ -4,9 +4,10 @@ pub enum TokenType {
     BoolLiteral,
     Symbol,
     Identifier,
+    Whitespace,
 }
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub struct TokenPosition {
     pub line: usize,
     pub col: usize,
@@ -25,4 +26,14 @@ pub struct Token {
     pub token_type: TokenType,
     pub pos: TokenPosition,
     content: String,
+}
+
+impl Token {
+    pub fn new(token_type: TokenType, pos: TokenPosition, content: String) -> Token {
+        Token {
+            token_type,
+            pos,
+            content,
+        }
+    }
 }
