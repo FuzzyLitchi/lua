@@ -1,4 +1,5 @@
 use super::token::{Token, TokenType, TokenPosition};
+use super::matcher::Matcher;
 
 #[derive(Clone)]
 pub struct Snapshot {
@@ -32,15 +33,11 @@ impl Tokenizer {
         }
     }
 
-    pub fn index(&self) -> usize {
-        self.index
-    }
-
     pub fn end(&self) -> bool {
         self.index >= self.items.len()
     }
 
-    pub fn advance(&mut self) -> bool {
+    pub fn advance(&mut self) {
         if let Some(a) = self.items.get(self.index + 1) {
             match *a {
                 '\n' => {
@@ -49,19 +46,14 @@ impl Tokenizer {
                 }
                 _ => self.pos.col += 1
             }
-            self.index += 1;
-            true
-        } else {
-            false
         }
+        self.index += 1;
     }
 
-    pub fn read(&mut self) -> Option<&char> {
-        if self.advance() {
-            Some(&self.items[self.index - 1])
-        } else {
-            None
-        }
+    pub fn read(&mut self) -> Option<char> {
+        let c = self.items.get(self.index).cloned();
+        self.advance();
+        c
     }
 
     pub fn peek_n(&self, n: usize) -> Option<&char> {
@@ -94,7 +86,7 @@ impl Tokenizer {
         self.peek_snapshot().unwrap().pos
     }
 
-    /*pub fn try_match_token(&mut self, matcher: &Matcher) -> Option<Token> {
+    pub fn try_match_token(&mut self, matcher: &Matcher) -> Option<Token> {
         if self.end() {
             return Some(Token::new(TokenType::EOF,
                                    TokenPosition::new(self.index, self.index),
@@ -113,13 +105,13 @@ impl Tokenizer {
                 None
             }
         }
-    }*/
+    }
 }
 
 impl Iterator for Tokenizer {
     type Item = char;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.read().cloned()
+        self.read()
     }
 }

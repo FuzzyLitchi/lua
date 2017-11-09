@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub enum TokenType {
     IntLiteral,
     StringLiteral,
@@ -5,12 +6,22 @@ pub enum TokenType {
     Symbol,
     Identifier,
     Whitespace,
+    EOF,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct TokenPosition {
     pub line: usize,
     pub col: usize,
+}
+
+impl TokenPosition {
+    pub fn new(line: usize, col: usize) -> TokenPosition {
+        TokenPosition {
+            line,
+            col,
+        }
+    }
 }
 
 impl Default for TokenPosition {
@@ -22,6 +33,7 @@ impl Default for TokenPosition {
     }
 }
 
+#[derive(Debug)]
 pub struct Token {
     pub token_type: TokenType,
     pub pos: TokenPosition,

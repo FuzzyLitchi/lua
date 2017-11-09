@@ -32,3 +32,24 @@ impl Matcher for WhitespaceMatcher {
         }
     }
 }
+
+pub struct IntLiteralMatcher;
+
+impl Matcher for IntLiteralMatcher {
+    fn try_match(&self, tokenizer: &mut Tokenizer) -> Option<Token> {
+        let mut accum = String::new();
+        while let Some(c) = tokenizer.read() {
+            if c.is_digit(10) {
+                accum.push(c.clone());
+            } else {
+                break
+            }
+        }
+
+        if accum.is_empty() {
+            None
+        } else {
+            token!(tokenizer, IntLiteral, accum)
+        }
+    }
+}
