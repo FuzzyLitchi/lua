@@ -1,9 +1,11 @@
 mod lua;
 
+use lua::lexer::lexer;
 use lua::lexer::tokenizer::Tokenizer;
 
 fn main() {
-    let code = "haha yes";
+    let code = "1234";
 
-    Tokenizer::new(code.chars().collect());
+    let mut lexer = lexer(code.chars().collect());
+    println!("{:?}", lexer.match_token());
 }
