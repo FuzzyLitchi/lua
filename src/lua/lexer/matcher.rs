@@ -12,8 +12,50 @@ macro_rules! token {
     }};
 }
 
+pub struct IntLiteralMatcher;
+
+impl Matcher for IntLiteralMatcher {
+    fn try_match(&self, tokenizer: &mut Tokenizer) -> Option<Token> {
+        let mut accum = String::new();
+        while let Some(c) = tokenizer.next() {
+            if c.is_digit(10) {
+                accum.push(c.clone());
+            } else {
+                break
+            }
+        }
+
+        if accum.is_empty() {
+            None
+        } else {
+            token!(tokenizer, IntLiteral, accum)
+        }
+    }
+}
+
 pub trait Matcher {
     fn try_match(&self, tokenizer: &mut Tokenizer) -> Option<Token>;
+}
+
+pub struct IdentifierMatcher;
+
+impl Matcher for IdentifierMatcher {
+    fn try_match(&self, tokenizer: &mut Tokenizer) -> Option<Token> {
+        let mut accum = String::new();
+        while let Some(c) = tokenizer.next() {
+            if c.is_alphabetic() {
+                accum.push(c);
+            } else {
+                break
+            }
+        }
+
+        if accum.is_empty() {
+            None
+        } else {
+            token!(tokenizer, Identifier, accum)
+        }
+    }
 }
 
 pub struct WhitespaceMatcher;
@@ -29,27 +71,6 @@ impl Matcher for WhitespaceMatcher {
             token!(tokenizer, Whitespace, String::new())
         } else {
             None
-        }
-    }
-}
-
-pub struct IntLiteralMatcher;
-
-impl Matcher for IntLiteralMatcher {
-    fn try_match(&self, tokenizer: &mut Tokenizer) -> Option<Token> {
-        let mut accum = String::new();
-        while let Some(c) = tokenizer.read() {
-            if c.is_digit(10) {
-                accum.push(c.clone());
-            } else {
-                break
-            }
-        }
-
-        if accum.is_empty() {
-            None
-        } else {
-            token!(tokenizer, IntLiteral, accum)
         }
     }
 }
