@@ -3,10 +3,8 @@ mod lua;
 use lua::lexer::lexer;
 
 fn main() {
-    let code = "1234
-haha
-
-haha
+    let code = "
+foo = 123
     ";
 
     let lexer = lexer(code.chars().collect());

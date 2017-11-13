@@ -7,14 +7,14 @@ pub fn lexer(data: Vec<char>) -> Lexer {
     let tokenizer = Tokenizer::new(data);
     let mut lexer = Lexer::new(tokenizer);
 
-    let matcher_int_literal = IntLiteralMatcher;
-    lexer.matchers_mut().push(Rc::new(matcher_int_literal));
+    lexer.matchers_mut().push(Rc::new(IntLiteralMatcher));
 
-    let matcher_identifier = IdentifierMatcher;
-    lexer.matchers_mut().push(Rc::new(matcher_identifier));
+    lexer.matchers_mut().push(Rc::new(IdentifierMatcher));
 
-    let matcher_whitespace = WhitespaceMatcher;
-    lexer.matchers_mut().push(Rc::new(matcher_whitespace));
+    lexer.matchers_mut().push(Rc::new(WhitespaceMatcher));
+
+    let matcher_symbol = ConstantCharMatcher::new(TokenType::Symbol, vec!['=']);
+    lexer.matchers_mut().push(Rc::new(matcher_symbol));
 
     lexer
 }

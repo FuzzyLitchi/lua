@@ -74,3 +74,30 @@ impl Matcher for WhitespaceMatcher {
         }
     }
 }
+
+pub struct ConstantCharMatcher {
+    token_type: TokenType,
+    constants: Vec<char>,
+}
+
+impl ConstantCharMatcher {
+    pub fn new(token_type: TokenType, constants: Vec<char>) -> Self {
+        ConstantCharMatcher {
+            token_type: token_type,
+            constants: constants,
+        }
+    }
+}
+
+impl Matcher for ConstantCharMatcher {
+    fn try_match(&self, tokenizer: &mut Tokenizer) -> Option<Token> {
+        let c = tokenizer.peek().unwrap().clone();
+        for constant in &self.constants {
+            if c == *constant {
+                tokenizer.advance();
+                return token!(tokenizer, self.token_type, constant.to_string())
+            }
+        }
+        None
+    }
+}

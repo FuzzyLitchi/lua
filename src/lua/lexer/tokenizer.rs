@@ -16,6 +16,7 @@ impl Snapshot {
     }
 }
 
+#[derive(Clone)]
 pub struct Tokenizer {
     pub pos: TokenPosition,
     index: usize,
