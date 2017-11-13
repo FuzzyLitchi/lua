@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 pub enum TokenType {
     IntLiteral,
     StringLiteral,
@@ -9,6 +9,9 @@ pub enum TokenType {
     EOF,
 }
 
+//A token position starts at 1,1
+//The leftmost character in some text is in collum 1
+//The first line is line 1
 #[derive(Copy, Clone, Debug)]
 pub struct TokenPosition {
     pub line: usize,
