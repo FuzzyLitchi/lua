@@ -27,8 +27,8 @@ impl TokenPosition {
 impl Default for TokenPosition {
     fn default() -> Self {
         TokenPosition {
-            line: 0,
-            col: 0,
+            line: 1,
+            col: 1,
         }
     }
 }
