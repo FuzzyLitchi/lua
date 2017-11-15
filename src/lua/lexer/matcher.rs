@@ -33,6 +33,27 @@ impl Matcher for IntLiteralMatcher {
     }
 }
 
+pub struct StringLiteralMatcher;
+
+impl Matcher for StringLiteralMatcher {
+    fn try_match(&self, tokenizer: &mut Tokenizer) -> Option<Token> {
+        if tokenizer.peek() == Some(&'"') {
+            tokenizer.advance();
+
+            let mut accum = String::new();
+            while let Some(c) = tokenizer.next() {
+                if c == '"' {
+                    return token!(tokenizer, StringLiteral, accum);
+                } else {
+                    accum.push(c);
+                }
+            }
+        }
+
+        None
+    }
+}
+
 pub trait Matcher {
     fn try_match(&self, tokenizer: &mut Tokenizer) -> Option<Token>;
 }
