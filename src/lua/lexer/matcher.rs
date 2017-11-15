@@ -98,14 +98,14 @@ impl Matcher for WhitespaceMatcher {
 
 pub struct ConstantCharMatcher {
     token_type: TokenType,
-    constants: Vec<char>,
+    constants: &'static [char],
 }
 
 impl ConstantCharMatcher {
-    pub fn new(token_type: TokenType, constants: Vec<char>) -> Self {
+    pub fn new(token_type: TokenType, constants: &'static [char]) -> Self {
         ConstantCharMatcher {
-            token_type: token_type,
-            constants: constants,
+            token_type,
+            constants,
         }
     }
 }
@@ -113,10 +113,40 @@ impl ConstantCharMatcher {
 impl Matcher for ConstantCharMatcher {
     fn try_match(&self, tokenizer: &mut Tokenizer) -> Option<Token> {
         let c = tokenizer.peek().unwrap().clone();
-        for constant in &self.constants {
+        for constant in self.constants {
             if c == *constant {
                 tokenizer.advance();
                 return token!(tokenizer, self.token_type, constant.to_string())
+            }
+        }
+        None
+    }
+}
+
+pub struct ConstantStringMatcher {
+    token_type: TokenType,
+    constants: &'static [&'static str],
+}
+
+impl ConstantStringMatcher {
+    pub fn new(token_type: TokenType, constants: &'static [&'static str]) -> Self {
+        ConstantStringMatcher {
+            token_type,
+            constants,
+        }
+    }
+}
+
+impl Matcher for ConstantStringMatcher {
+    fn try_match(&self, tokenizer: &mut Tokenizer) -> Option<Token> {
+        for constant in self.constants {
+            let dat = tokenizer.clone().take(constant.len());
+            if dat.size_hint().1.unwrap() != constant.len() {
+                return None
+            }
+            if dat.collect::<String>() == *constant {
+                tokenizer.advance_n(constant.len());
+                return token!(tokenizer, self.token_type.clone(), constant.to_string())
             }
         }
         None

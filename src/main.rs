@@ -6,6 +6,7 @@ fn main() {
     let code = "
 foo = 123
 hahaja = \"haha\"
+bar = true
     ";
 
     let lexer = lexer(code.chars().collect());
