@@ -51,6 +51,12 @@ impl Tokenizer {
         self.index += 1;
     }
 
+    pub fn advance_n(&mut self, n: usize) {
+        for _ in 0..n {
+            self.advance();
+        }
+    }
+
     pub fn peek_n(&self, n: usize) -> Option<&char> {
         self.items.get(self.index + n)
     }

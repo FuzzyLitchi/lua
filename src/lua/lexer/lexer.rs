@@ -11,12 +11,15 @@ pub fn lexer(data: Vec<char>) -> Lexer {
 
     lexer.matchers_mut().push(Rc::new(StringLiteralMatcher));
 
+    let bool_matcher = ConstantStringMatcher::new(TokenType::BoolLiteral, &["true", "false"]);
+    lexer.matchers_mut().push(Rc::new(bool_matcher));
+
     lexer.matchers_mut().push(Rc::new(IdentifierMatcher));
 
     lexer.matchers_mut().push(Rc::new(WhitespaceMatcher));
 
-    let matcher_symbol = ConstantCharMatcher::new(TokenType::Symbol, vec!['=']);
-    lexer.matchers_mut().push(Rc::new(matcher_symbol));
+    let symbol_matcher = ConstantCharMatcher::new(TokenType::Symbol, &['=']);
+    lexer.matchers_mut().push(Rc::new(symbol_matcher));
 
     lexer
 }
