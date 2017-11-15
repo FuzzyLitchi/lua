@@ -9,6 +9,8 @@ pub fn lexer(data: Vec<char>) -> Lexer {
 
     lexer.matchers_mut().push(Rc::new(IntLiteralMatcher));
 
+    lexer.matchers_mut().push(Rc::new(StringLiteralMatcher));
+
     lexer.matchers_mut().push(Rc::new(IdentifierMatcher));
 
     lexer.matchers_mut().push(Rc::new(WhitespaceMatcher));

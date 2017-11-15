@@ -5,6 +5,7 @@ use lua::lexer::lexer;
 fn main() {
     let code = "
 foo = 123
+hahaja = \"haha\"
     ";
 
     let lexer = lexer(code.chars().collect());
